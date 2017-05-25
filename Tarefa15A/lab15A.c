@@ -1,82 +1,135 @@
-#include <stdio.h>
-int checarV(int linha, int coluna, int mat[][200]);
+#include <stdio.h> // Erick Kussumoto do Nascimento 196492
+void setarZero(int mat[][200], int colunas, int linhas);
+void leMatriz(int mat[][200], int colunas, int linhas);
+void imprimeMatriz(int mat[][200], int colunas, int linhas);
+void copiaMatriz(int source[][200], int target[][200], int colunas, int linhas);
+int qntH(int source[][200], int colunas, int linhas);
+int qntZ(int source[][200], int colunas, int linhas);
+
 
 int main(){
-    int m, n, i, ent, x, a, b, aux;
-    int mat[200][200];
-    int mataux[200][200];
-    int vetaux[400] = {};
-    scanf("%d %d", &m, &n);
-    scanf("%d", &i);
-    for(a = 0; a < m + 1; a++){ // Setar toda a matriz para 0 (MATRIZ ESTA COM UM TAMANHO A MAIS, TOMAR CUIDADO COM O PRINT!)
-        for(b = 0; b < n + 1; b++){
-            mat[a][b] = 0;
-        }
-    }
+    int m, n, i, a, b, c, humanos, zumbis;
+    int mat[200][200], mataux[200][200];
     
-    for(a = 1; a < m; a++){ // Seta todos os valores de entrada na matriz 
-        for(b = 1; b < n; b++){
-            scanf("%d", &ent);
-            mat[a][b] = ent;
-        }
-    }
+    scanf("%d %d %d", &m, &n, &i);
+    m = m + 2;
+    n = n + 2;
     
+    setarZero(mat, m, n);
     
-    for(a = 1; a < m; a++){  
-        for(b = 1; b < n; b++){
-            
-            if(mat[a][b] == 0){
-                x = checarV(a, b, mat);
-                if(x == 1)
-                    mataux[a][b] == 1;
+    leMatriz(mat, m, n);
+    
+    for(c = 0; c <= i; c++){
+        for(a = 1; a < m - 1; a++){
+            for(b = 1; b < n - 1; b++){
+                if(mat[a][b] == 0){
+                    humanos = qntH(mat, a, b);
+                    if(humanos == 2)
+                        mataux[a][b] = 1;
+                }
                 
-            }else if(mat[a][b] == 1){
+                if(mat[a][b] == 1){
+                    zumbis = qntZ(mat, a, b);
+                    if(zumbis != 0){
+                        mataux[a][b] = 2;
+                    }else{
+                        mataux[a][b] = 1;
+                    }
+                }
                 
-                
-            }else if(mat[a][b] == 2){
-            
-                
-                
-                
+                if(mat[a][b] == 2){
+                    humanos = qntH(mat, a, b);
+                    if(humanos >= 2 || humanos == 0){
+                        mataux[a][b] = 0;
+                    }else if(humanos == 1){
+                        mataux[a][b] = 2;
+                    }
+                }
             }
-            
-            
-            
+        }
+        printf("iteracao %d\n", c);
+        
+        imprimeMatriz(mat, m, n); 
+        
+        copiaMatriz(mataux, mat, m, n);
+    }
+}
+
+
+
+
+
+
+int qntH(int source[][200], int colunas, int linhas){
+    int i, j, humanos;
+    humanos = 0;
+    for(i = colunas - 1; i <= colunas + 1; i++){
+        for(j = linhas - 1; j <= linhas + 1; j++){
+            if(i == colunas && j == linhas)
+                continue;
+            if(source[i][j] == 1){
+                humanos++;
+            }
         }
     }
-    
-    for(a = 1; a < m; a++){
-        for(b = 1; b < n; b++){
-            printf("%d", mat[a][b]);
+    return humanos;
+}
+
+
+int qntZ(int source[][200], int colunas, int linhas){
+    int i, j, zumbis;
+    zumbis = 0;
+    for(i = colunas - 1; i <= colunas + 1; i++){
+        for(j = linhas - 1; j <= linhas + 1; j++){
+            if(i == colunas && j == linhas)
+                continue;
+            if(source[i][j] == 2){
+                zumbis++;
+            }
+        }
+    }
+    return zumbis;
+}
+
+
+void copiaMatriz(int source[][200], int target[][200], int colunas, int linhas){
+    int i, j;
+    for(i = 0; i < colunas; i++){
+        for(j = 0; j < linhas; j++){
+            target[i][j] = source[i][j];
+        }
+    }
+}
+
+
+void setarZero(int mat[][200], int colunas, int linhas){
+    int i, j;
+    for(i = 0; i < colunas; i++){
+        for(j = 0; j < linhas; j++){
+            mat[i][j] = 0;
+        }
+    }
+}
+
+
+void leMatriz(int mat[][200], int colunas, int linhas){
+    int i, j;
+    for(i = 1; i < colunas - 1; i++){
+        for(j = 1; j < linhas - 1; j++){
+            scanf("%d", &mat[i][j]);
+        }
+    }
+}
+
+
+void imprimeMatriz(int mat[][200], int colunas, int linhas){
+    int i, j;
+    for(i = 1; i < colunas - 1; i++){
+        for(j = 1; j < linhas - 1; j++){
+            printf("%d", mat[i][j]);
         }
         printf("\n");
     }
 }
-
-
-int checarV(int linha, int coluna, int mat[][200]){
-    int i, j, x;
-    int vet[400] = {};
-    x = 0;
-    for(i = linha - 1; i <= linha + 1; i++){
-        for(j = coluna - 1; j <= coluna + 1; j++){
-            if(i = linha && j == coluna){
-                break;
-            }
-            vet[x] = mat[i][j];
-            x++;
-        }
-        
-    }
-    for(i = 0; i < x - 1; i++){
-        for(j = 0; j < x; j++){
-            if(vet[i] == 1 && vet[j] == 1)
-                return 1;
-        }
-    }
-    return 0;
-    
-}
-
 
 
