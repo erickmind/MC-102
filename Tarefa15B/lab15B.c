@@ -1,6 +1,6 @@
 /* Laboratorio 15B - Brincando com cordas
- * Nome:
- * RA:
+ * Nome: Erick Kussumoto do Nascimento
+ * RA: 196492
  */
 
 #include <stdio.h>
@@ -8,7 +8,7 @@
 
 /* Funcao: removePadrao
  *
- *    Processa linearmente (e uma unica vez) os carateres de uma dada sequencia de movimentos,
+ *    Processa linearmente (e uma unica vez) os caracteres de uma dada sequencia de movimentos,
  *    removendo as ocorrencias de um dado padrao.
  * 
  * Parametros:
@@ -35,6 +35,31 @@
  * 
  */
 int removePadrao(char str[], char padrao[], char targetStr[]) {
+    int i, j;
+    j = 0;
+    for(i = 0; str[i] != \0; i++){
+        if(str[i] != '+' && str[i + 1] != '-'){
+            targetStr[i] = str[i];
+            targetStr[i + 1] = str[i + 1];
+            j++;
+        }
+        if(str[i] != '-' && str[i + 1] != '+'){
+            targetStr[i] = str[i];
+            targetStr[i + 1] = str[i + 1];
+            j++;
+        }
+        if(str[i] != '*' && str[i + 1] != '*'){
+            targetStr[i] = str[i];
+            targetStr[i + 1] = str[i + 1];
+            j++;
+        }
+    }
+    
+    if(j != 0){
+        return 1;
+    }else{
+        return 0;
+    }
 }
 
 /* Funcao: removeBloco
