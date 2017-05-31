@@ -35,36 +35,30 @@
  * 
  */
 int removePadrao(char str[], char padrao[], char targetStr[]) {
-    int i, j;
+    int i, j, n, x;
+    x = strlen(str);
     j = 0;
-    for(i = 0; str[i] != \0; i++){
-        if(str[i] != '+' && str[i + 1] != '-'){
-            targetStr[i] = str[i];
-            targetStr[i + 1] = str[i + 1];
-            j++;
-        }
-        if(str[i] != '-' && str[i + 1] != '+'){
-            targetStr[i] = str[i];
-            targetStr[i + 1] = str[i + 1];
-            j++;
-        }
-        if(str[i] != '*' && str[i + 1] != '*'){
-            targetStr[i] = str[i];
-            targetStr[i + 1] = str[i + 1];
+    n = 0;
+    for(i = 0; i < x; i++){
+        if(str[i] != padrao[0] || str[i + 1] != padrao [1]){
+            targetStr[n] = str[i];
+            n++;
+        }else{
+            i++;
             j++;
         }
     }
+    targetStr[n] = '\0';
     
     if(j != 0){
         return 1;
-    }else{
-        return 0;
     }
+    return 0;
 }
 
 /* Funcao: removeBloco
  *
- *    Processa linearmente (e uma unica vez) os carateres de uma dada sequencia de movimentos,
+ *    Processa linearmente (e uma unica vez) os caracteres de uma dada sequencia de movimentos,
  *    removendo o bloco inicial delimitado pelo dado caractere.
  * 
  * Parametros:
@@ -72,7 +66,7 @@ int removePadrao(char str[], char padrao[], char targetStr[]) {
  *            c: caractere delimitador do bloco a ser removido
  *    targetStr: se str comeca com o caractere do parametro c, targetStr contera a sequencia obtida
  *               apos a remocao (de str) do bloco de movimentos da primeira posicao de str ate a 
- *               segunda ocorrencia (inclusive) do caractere do parametro c. Se nao exsitir uma segunda 
+ *               segunda ocorrencia (inclusive) do caractere do parametro c. Se nao existir uma segunda 
  *               ocorrencia do caracter do parametro c, targetStr deve conter a sequencia vazia.
  *
  * Retorno:
@@ -93,6 +87,32 @@ int removePadrao(char str[], char padrao[], char targetStr[]) {
  * 
  */
 int removeBloco(char str[], char c, char targetStr[]) {
+    int i, j, k, x;
+    x = strlen(str);
+    k = 0;
+    
+    if(str[0] == c && x > 1){
+        for(i = 1; i < x ; i++){
+            if(str[i] == c && str[i + 1] != '\0'){
+                for(j = i + 1; j < x; j++){
+                    targetStr[k] = str[j];
+                    k++;
+                }
+                targetStr[k] = '\0';
+                return 1;
+            }
+        }
+        targetStr[0] = '\0';
+        return 1;
+    }
+    
+    if(str[0] == c && str[1] == '\0'){
+        targetStr[0] = '\0';
+        return 1;
+    }
+    
+    targetStr = str;
+    return 0;
 }
 
 /* Funcao: substituiPadrao
@@ -128,4 +148,32 @@ int removeBloco(char str[], char c, char targetStr[]) {
  * 
  */
 int substituiPadrao(char str[], char padrao[], char novoPadrao[], char targetStr[]) {
+    int i, j, x;
+    x = strlen(str);
+    j = 0;
+    
+    for(i = 0; i < (x - 2); i++){
+        if(str[i] != padrao[0] || str[i + 1] != padrao[1] || str[i + 2] != padrao[2]){
+            targetStr[i] = str[i];
+        }else{
+            targetStr[i] = novoPadrao[0];
+            targetStr[i + 1] = novoPadrao[1];
+            targetStr[i + 2] = novoPadrao[2];
+            i = i + 2;
+            j++;
+        }
+    }
+    if(i != x){
+        targetStr[i] = str[i];
+        targetStr[i + 1] = str[i + 1];
+        i = i + 2;
+    }
+    targetStr[i] = '\0';
+    
+    if(j != 0){
+        return 1;
+    }
+    
+    return 0;
 }
+
