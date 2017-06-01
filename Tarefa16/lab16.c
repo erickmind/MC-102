@@ -138,7 +138,7 @@ Retorno
 */
 
 int* init(int *tam, int *cap) {
-    int * conj = malloc(2*sizeof(int));
+    int *conj = malloc(2*sizeof(int));
     *tam = 0;
     *cap = 2;
     return conj;
@@ -273,7 +273,7 @@ Parametros:
 - tam_B -> Quantidade de elementos do conjunto B;
 - tam_C -> Ponteiro para a quantidade de elementos do conjunto resultante;
 - cap_C -> Ponteiro para a capacidade de elementos do conjunto resultante;
-- elemento -> Elementos para ser removido;
+- elemento -> Elemento para ser removido;
 
 OBS:
 - O tamanho atual e a capacidade do conjunto resultante C devera seguir a logica apresentada nas funcoes 
@@ -289,7 +289,20 @@ Retorno
 */
 
 int* uniao(int *conj_A, int *conj_B, int tam_A, int tam_B, int *tam_C, int *cap_C) {
-  return NULL;
+    int i;
+    int *conj_C;
+    for(i = 0; i < tam_A; i++){
+        conj_C = adicao(conj_C, *tam_C, *cap_C, conj_A[i]);
+    }
+    
+    for(i = 0; i < tam_B; i++){
+        x = pertence(conj_C, *tam_C, conj_B[i]);
+        if(x = 0){
+            conj_C = adicao(conj_C, *tam_C, *cap_C, conj_B[i]);
+        }
+    }
+    
+    return conj_C;
 }
 
 /*
