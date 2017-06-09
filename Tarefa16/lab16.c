@@ -26,18 +26,18 @@ Parametros:
 
 void ordena(int *conj, int tam) {
     int i, j, aux;
-    conj = malloc(tam*sizeof(int));
+    
     for(i = 0; i < tam - 1; i++){
-        for(j = 0; j < tam; j++){
-            if(conj[i] > conj[i + 1]){
+        for(j = i + 1; j < tam; j++){
+            if(conj[i] > conj[j]){
                 aux = conj[i];
-                conj[i] = conj[i + 1];
-                conj[i + 1] = aux;
+                conj[i] = conj[j];
+                conj[j] = aux;
             }
         }
     }
     
-}
+}   
 
 /*
 ------------------------------------------------------------------------------------------------------------
@@ -62,7 +62,6 @@ Retorno
 
 int pertence(int *conj, int tam, int elemento) {
     int i;
-    conj = malloc(tam*sizeof(int));
     for(i = 0; i < tam; i++){
         if(conj[i] == elemento){
             return 1;
@@ -93,11 +92,9 @@ Retorno
 */
 
 int contido(int *conj_A, int *conj_B, int tam_A, int tam_B) {
-    int i, j;
-    conj_A = malloc(tam_A*sizeof(int));
-    conj_B = malloc(tam_B*sizeof(int));
+    int i, j, aux;
     if(tam_A == 0){
-        return 1
+        return 1;
     }
     for(i = 0; i < tam_A; i++){
         for(j = 0; j < tam_B; j++){
@@ -175,7 +172,7 @@ Retorno
 
 int* adicao(int *conj, int *tam, int *cap, int elemento) {
     int i;
-    if(*conj == NULL){
+    if(conj == NULL){
         conj = init(tam, cap);
     }
     
@@ -185,19 +182,22 @@ int* adicao(int *conj, int *tam, int *cap, int elemento) {
         }
     }
     
-    if(*tam == *cap){
-        *cap = (*cap)*2;
-        int *conj_aux = malloc((*cap)*sizeof(int));
+    if(*tam >= *cap){
+        int *conj_aux = malloc(2*(*cap)*sizeof(int));
         for(i = 0; i < *tam; i++){
-            conjaux[i] = conj[i];
+            conj_aux[i] = conj[i];
         }
-        conj_aux[(*tam)] = elemento;
-        *tam = (*tam) + 1;
+        conj_aux[*tam] = elemento;
+        *tam = (*tam) + 1;  
+        *cap = (*cap)*2;
+        free(conj);
+        ordena(conj_aux, *tam);
         return conj_aux;
     
     }else{
         conj[(*tam)] = elemento;
-        *tam = (*tam) + 1;
+        *tam = *tam + 1;
+        ordena(conj, *tam);
     }
     
     return conj;
@@ -234,7 +234,7 @@ int* subtracao(int *conj, int *tam, int *cap, int elemento) {
     aux = 0;
     for(i = 0; i < *tam; i++){
         if(conj[i] == elemento){
-            for(j = i; j < tam; j++){
+            for(j = i; j < *tam; j++){
                 conj[j] = conj[j + 1];
             }
             *tam = (*tam) - 1;
@@ -245,8 +245,8 @@ int* subtracao(int *conj, int *tam, int *cap, int elemento) {
         return conj;
     }
     
-    if(*tam <= (*cap)*0,25){
-        *cap = (*cap)*0,5;
+    if(*tam <= (*cap)*0.25 && *cap > 2){
+        *cap = (*cap)*0.5;
         int *conj_aux = malloc((*cap)*sizeof(int)); 
         for(i = 0; i < *tam; i++){
             conj_aux[i] = conj[i];
@@ -290,16 +290,14 @@ Retorno
 
 int* uniao(int *conj_A, int *conj_B, int tam_A, int tam_B, int *tam_C, int *cap_C) {
     int i;
-    int *conj_C;
+    int *conj_C = init(tam_C, cap_C);
+    
     for(i = 0; i < tam_A; i++){
-        conj_C = adicao(conj_C, *tam_C, *cap_C, conj_A[i]);
+        conj_C = adicao(conj_C, tam_C, cap_C, conj_A[i]);
     }
     
     for(i = 0; i < tam_B; i++){
-        x = pertence(conj_C, *tam_C, conj_B[i]);
-        if(x = 0){
-            conj_C = adicao(conj_C, *tam_C, *cap_C, conj_B[i]);
-        }
+        conj_C = adicao(conj_C, tam_C, cap_C, conj_B[i]);
     }
     
     return conj_C;
@@ -336,7 +334,25 @@ Retorno
 */
 
 int* intersecao(int *conj_A, int *conj_B, int tam_A, int tam_B, int *tam_C, int *cap_C) {
-  return NULL;
+    int i, j, aux;
+    int *conj_C = init(tam_C, cap_C);
+    
+    for(i = 0; i < tam_A; i++){
+        for(j = 0; j < tam_B; j++){
+            if(conj_A[i] == conj_B[j]){
+                conj_C = adicao(conj_C, tam_C, cap_C, conj_A[i]);
+                aux++;
+            } 
+        }
+    }
+    
+    if(aux != 0){
+        return conj_C;
+    
+    }else{
+        conj_C = init(tam_C, cap_C);
+        return conj_C;
+    }
 }
 
 /*
@@ -370,5 +386,19 @@ Retorno
 */
 
 int* diferenca(int *conj_A, int *conj_B, int tam_A, int tam_B, int *tam_C, int *cap_C) {
-  return NULL;
+    int i, x;
+    int *conj_C = init(tam_C, cap_C);
+    
+    for(i = 0; i < tam_A; i++){
+        conj_C = adicao(conj_C, tam_C, cap_C, conj_A[i]);
+    }
+    
+    for(i = 0; i < tam_B; i++){
+        x = pertence(conj_C, *tam_C, conj_B[i]);
+        if(x == 1){
+            conj_C = subtracao(conj_C, tam_C, cap_C, conj_B[i]);
+        }
+    }
+    
+    return conj_C; 
 }
